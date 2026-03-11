@@ -6,11 +6,14 @@
     * formaction
     * hiddenparams
     * sortlabel
+    * visibilitylabel
     * directionlabel
     * applylabel
     * sortid
+    * visibilityid
     * dirid
     * sortoptions
+    * visibilityoptions
     * directionoptions
     * isenrolmentsort
     * showteachers
@@ -38,6 +41,13 @@
                 {{#sortoptions}}
                     <option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>
                 {{/sortoptions}}
+            </select>
+
+            <label for="{{visibilityid}}">{{visibilitylabel}}</label>
+            <select id="{{visibilityid}}" name="bmdvisibility">
+                {{#visibilityoptions}}
+                    <option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>
+                {{/visibilityoptions}}
             </select>
 
             <label for="{{dirid}}">{{directionlabel}}</label>
@@ -71,6 +81,9 @@
                     {{/hasimage}}
 
                     <a class="miscursosdashboard__courselink" href="{{url}}">{{fullname}}</a>
+                    {{#showcoursecompleted}}
+                        <span class="miscursosdashboard__badge">{{coursecompletedlabel}}</span>
+                    {{/showcoursecompleted}}
 
                     {{#showteachers}}
                         {{#hasteachers}}

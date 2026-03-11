@@ -110,6 +110,11 @@ class block_miscursosdashboard extends block_base {
             $direction = 'asc';
         }
 
+        $visibility = optional_param('bmdvisibility', 'active', PARAM_ALPHA);
+        if (!in_array($visibility, ['active', 'all'], true)) {
+            $visibility = 'active';
+        }
+
         $layoutmode = isset($this->config->layoutmode) ? (string)$this->config->layoutmode : 'list';
         if (!in_array($layoutmode, ['list', 'grid'], true)) {
             $layoutmode = 'list';
@@ -120,10 +125,11 @@ class block_miscursosdashboard extends block_base {
         $showend = isset($this->config->showenrolend) ? (bool)$this->config->showenrolend : true;
 
         $records = \block_miscursosdashboard\local\course_service::get_user_courses_with_enrolment_data($USER->id);
+        $records = $this->filter_courses_by_completion($records, $visibility);
         $courses = $this->sort_courses($records, $sort, $direction);
 
         $params = $PAGE->url->params();
-        unset($params['bmdsort'], $params['bmddir']);
+        unset($params['bmdsort'], $params['bmddir'], $params['bmdvisibility']);
 
         $hiddenparams = [];
         foreach ($params as $name => $value) {
@@ -142,9 +148,11 @@ class block_miscursosdashboard extends block_base {
             'formaction' => $PAGE->url->out_omit_querystring(),
             'hiddenparams' => $hiddenparams,
             'sortlabel' => get_string('sortby', 'block_miscursosdashboard'),
+            'visibilitylabel' => get_string('coursevisibility', 'block_miscursosdashboard'),
             'directionlabel' => get_string('direction', 'block_miscursosdashboard'),
             'applylabel' => get_string('applysort', 'block_miscursosdashboard'),
             'sortid' => 'bmdsort-' . $this->instance->id,
+            'visibilityid' => 'bmdvisibility-' . $this->instance->id,
             'dirid' => 'bmddir-' . $this->instance->id,
             'sortoptions' => [
                 [
@@ -156,6 +164,18 @@ class block_miscursosdashboard extends block_base {
                     'value' => 'enrolment',
                     'label' => get_string('sortbyenrolment', 'block_miscursosdashboard'),
                     'selected' => $sort === 'enrolment',
+                ],
+            ],
+            'visibilityoptions' => [
+                [
+                    'value' => 'active',
+                    'label' => get_string('showactivecourses', 'block_miscursosdashboard'),
+                    'selected' => $visibility === 'active',
+                ],
+                [
+                    'value' => 'all',
+                    'label' => get_string('showallcourses', 'block_miscursosdashboard'),
+                    'selected' => $visibility === 'all',
                 ],
             ],
             'directionoptions' => [
@@ -178,10 +198,11 @@ class block_miscursosdashboard extends block_base {
             'layoutclass' => $isgridlayout ? 'miscursosdashboard__list--grid' : 'miscursosdashboard__list--list',
             'enrolstartlabel' => get_string('enrolstartdate', 'block_miscursosdashboard'),
             'enrolendlabel' => get_string('enrolenddate', 'block_miscursosdashboard'),
+            'coursecompletedlabel' => get_string('coursecompletedlabel', 'block_miscursosdashboard'),
             'nodata' => get_string('nodata', 'block_miscursosdashboard'),
             'nocourses' => empty($courses),
             'nocoursesmessage' => get_string('nocourses', 'block_miscursosdashboard'),
-            'courses' => $this->export_courses_for_template($courses, $isgridlayout, $showteachers),
+            'courses' => $this->export_courses_for_template($courses, $isgridlayout, $showteachers, $visibility === 'all'),
         ];
 
         $this->content->text = $OUTPUT->render_from_template('block_miscursosdashboard/content', $templatedata);
@@ -233,17 +254,44 @@ class block_miscursosdashboard extends block_base {
     }
 
     /**
+     * Filters courses by course end date according to selected visibility.
+     *
+     * @param array $courses
+     * @param string $visibility
+     * @return array
+     */
+    private function filter_courses_by_completion(array $courses, string $visibility): array {
+        if ($visibility === 'all') {
+            return $courses;
+        }
+
+        $now = time();
+
+        return array_values(array_filter($courses, function($record) use ($now): bool {
+            $enddate = isset($record->course->enddate) ? (int)$record->course->enddate : 0;
+            return $enddate <= 0 || $enddate >= $now;
+        }));
+    }
+
+    /**
      * Converts internal records to Mustache-friendly values.
      *
      * @param array $courses
      * @param bool $includeimages
      * @param bool $showteachers
+     * @param bool $showcompletionbadge
      * @return array
      */
-    private function export_courses_for_template(array $courses, bool $includeimages, bool $showteachers): array {
+    private function export_courses_for_template(
+        array $courses,
+        bool $includeimages,
+        bool $showteachers,
+        bool $showcompletionbadge
+    ): array {
         $results = [];
         $imagesbycourse = [];
         $teachersbycourse = [];
+        $now = time();
 
         $courseids = [];
         foreach ($courses as $record) {
@@ -261,6 +309,8 @@ class block_miscursosdashboard extends block_base {
         foreach ($courses as $record) {
             $courseid = (int)$record->course->id;
             $fullname = format_string($record->course->fullname);
+            $enddate = isset($record->course->enddate) ? (int)$record->course->enddate : 0;
+            $iscoursefinished = $enddate > 0 && $enddate < $now;
             $imageurl = '';
             $hasrealimage = false;
             if ($includeimages && !empty($imagesbycourse[$courseid])) {
@@ -282,6 +332,7 @@ class block_miscursosdashboard extends block_base {
             $results[] = [
                 'fullname' => $fullname,
                 'url' => (new moodle_url('/course/view.php', ['id' => $courseid]))->out(false),
+                'showcoursecompleted' => $showcompletionbadge && $iscoursefinished,
                 'hasimage' => $includeimages,
                 'hasrealimage' => $hasrealimage,
                 'imageurl' => $imageurl,

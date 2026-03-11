@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_miscursosdashboard';
-$plugin->version = 2026031105;
+$plugin->version = 2026031106;
 $plugin->requires = 2024100700;
 $plugin->supported = [500, 501];
 $plugin->maturity = MATURITY_STABLE;

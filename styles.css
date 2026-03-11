@@ -94,6 +94,18 @@
     text-decoration: none;
 }
 
+.block_miscursosdashboard .miscursosdashboard__badge {
+    display: inline-block;
+    width: fit-content;
+    margin-bottom: 0.5rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    background-color: #fff3cd;
+    color: #8a6d3b;
+}
+
 .block_miscursosdashboard .miscursosdashboard__courselink:hover,
 .block_miscursosdashboard .miscursosdashboard__courselink:focus {
     text-decoration: underline;
@@ -119,7 +131,7 @@
 
 @media (min-width: 768px) {
     .block_miscursosdashboard .miscursosdashboard__controls {
-        grid-template-columns: auto minmax(140px, 1fr) auto minmax(140px, 1fr) auto;
+        grid-template-columns: auto minmax(140px, 1fr) auto minmax(160px, 1fr) auto minmax(140px, 1fr) auto;
         justify-content: start;
     }
 

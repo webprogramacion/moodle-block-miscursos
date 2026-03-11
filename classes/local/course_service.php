@@ -45,7 +45,7 @@ class course_service {
     public static function get_user_courses_with_enrolment_data(int $userid): array {
         global $DB;
 
-        $courses = enrol_get_users_courses($userid, true, 'id,fullname,shortname');
+        $courses = enrol_get_users_courses($userid, true, 'id,fullname,shortname,enddate');
         if (empty($courses)) {
             return [];
         }
