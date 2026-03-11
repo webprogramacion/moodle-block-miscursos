@@ -1,0 +1,101 @@
+{{!
+    @template block_miscursosdashboard/content
+
+    Context variables required:
+    * header
+    * formaction
+    * hiddenparams
+    * sortlabel
+    * directionlabel
+    * applylabel
+    * sortid
+    * dirid
+    * sortoptions
+    * directionoptions
+    * isenrolmentsort
+    * showteachers
+    * showenrolstart
+    * showenrolend
+    * isgridlayout
+    * layoutclass
+    * enrolstartlabel
+    * enrolendlabel
+    * nodata
+    * nocourses
+    * nocoursesmessage
+    * courses
+}}
+<div class="miscursosdashboard">
+    <div class="miscursosdashboard__header">
+        <h3 class="miscursosdashboard__title">{{header}}</h3>
+        <form method="get" action="{{formaction}}" class="miscursosdashboard__controls" aria-label="{{sortlabel}}">
+            {{#hiddenparams}}
+                <input type="hidden" name="{{name}}" value="{{value}}">
+            {{/hiddenparams}}
+
+            <label for="{{sortid}}">{{sortlabel}}</label>
+            <select id="{{sortid}}" name="bmdsort">
+                {{#sortoptions}}
+                    <option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>
+                {{/sortoptions}}
+            </select>
+
+            <label for="{{dirid}}">{{directionlabel}}</label>
+            <select id="{{dirid}}" name="bmddir" {{^isenrolmentsort}}disabled{{/isenrolmentsort}}>
+                {{#directionoptions}}
+                    <option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>
+                {{/directionoptions}}
+            </select>
+
+            <button type="submit" class="btn btn-secondary btn-sm">{{applylabel}}</button>
+        </form>
+    </div>
+
+    {{#nocourses}}
+        <p class="miscursosdashboard__empty">{{nocoursesmessage}}</p>
+    {{/nocourses}}
+
+    {{^nocourses}}
+        <ul class="miscursosdashboard__list {{layoutclass}}">
+            {{#courses}}
+                <li class="miscursosdashboard__item">
+                    {{#hasimage}}
+                        <a href="{{url}}" class="miscursosdashboard__coverlink" aria-label="{{fullname}}">
+                            {{#hasrealimage}}
+                                <img class="miscursosdashboard__cover" src="{{imageurl}}" alt="{{imagealt}}" loading="lazy">
+                            {{/hasrealimage}}
+                            {{^hasrealimage}}
+                                <span class="miscursosdashboard__coverplaceholder" aria-hidden="true"></span>
+                            {{/hasrealimage}}
+                        </a>
+                    {{/hasimage}}
+
+                    <a class="miscursosdashboard__courselink" href="{{url}}">{{fullname}}</a>
+
+                    {{#showteachers}}
+                        {{#hasteachers}}
+                            <div class="miscursosdashboard__meta">
+                                <span class="miscursosdashboard__label"><i class="icon fa fa-user fa-fw miscursosdashboard__icon" aria-hidden="true"></i>{{teacherslabel}}:</span>
+                                <span>{{teacherstext}}</span>
+                            </div>
+                        {{/hasteachers}}
+                    {{/showteachers}}
+
+                    {{#showenrolstart}}
+                        <div class="miscursosdashboard__meta">
+                            <span class="miscursosdashboard__label"><i class="icon fa fa-calendar fa-fw miscursosdashboard__icon" aria-hidden="true"></i>{{enrolstartlabel}}:</span>
+                            <span>{{#hasenrolstart}}{{enrolstartformatted}}{{/hasenrolstart}}{{^hasenrolstart}}{{nodata}}{{/hasenrolstart}}</span>
+                        </div>
+                    {{/showenrolstart}}
+
+                    {{#showenrolend}}
+                        <div class="miscursosdashboard__meta">
+                            <span class="miscursosdashboard__label"><i class="icon fa fa-calendar-times-o fa-fw miscursosdashboard__icon" aria-hidden="true"></i>{{enrolendlabel}}:</span>
+                            <span>{{#hasenrolend}}{{enrolendformatted}}{{/hasenrolend}}{{^hasenrolend}}{{nodata}}{{/hasenrolend}}</span>
+                        </div>
+                    {{/showenrolend}}
+                </li>
+            {{/courses}}
+        </ul>
+    {{/nocourses}}
+</div>

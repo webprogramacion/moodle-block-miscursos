@@ -1,0 +1,138 @@
+.block_miscursosdashboard .miscursosdashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.block_miscursosdashboard .miscursosdashboard__header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.9rem;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 0.6rem;
+    background: linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%);
+}
+
+.block_miscursosdashboard .miscursosdashboard__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.block_miscursosdashboard .miscursosdashboard__controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.block_miscursosdashboard .miscursosdashboard__controls label {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #495057;
+}
+
+.block_miscursosdashboard .miscursosdashboard__controls select,
+.block_miscursosdashboard .miscursosdashboard__controls button {
+    width: 100%;
+}
+
+.block_miscursosdashboard .miscursosdashboard__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.block_miscursosdashboard .miscursosdashboard__list--list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.block_miscursosdashboard .miscursosdashboard__list--grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
+}
+
+.block_miscursosdashboard .miscursosdashboard__item {
+    padding: 0.85rem;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 0.6rem;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+}
+
+.block_miscursosdashboard .miscursosdashboard__coverlink {
+    display: block;
+    margin: -0.85rem -0.85rem 0.65rem -0.85rem;
+}
+
+.block_miscursosdashboard .miscursosdashboard__cover {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-top-left-radius: 0.6rem;
+    border-top-right-radius: 0.6rem;
+    display: block;
+}
+.block_miscursosdashboard .miscursosdashboard__coverplaceholder {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-top-left-radius: 0.6rem;
+    border-top-right-radius: 0.6rem;
+    display: block;
+    background: linear-gradient(135deg, #eef2f6 0%, #dde5ee 100%);
+}
+
+.block_miscursosdashboard .miscursosdashboard__courselink {
+    display: inline-block;
+    font-weight: 600;
+    margin-bottom: 0.45rem;
+    text-decoration: none;
+}
+
+.block_miscursosdashboard .miscursosdashboard__courselink:hover,
+.block_miscursosdashboard .miscursosdashboard__courselink:focus {
+    text-decoration: underline;
+}
+
+.block_miscursosdashboard .miscursosdashboard__meta {
+    font-size: 0.82rem;
+    color: #495057;
+    line-height: 1.35;
+}
+
+.block_miscursosdashboard .miscursosdashboard__label {
+    font-weight: 600;
+}
+
+.block_miscursosdashboard .miscursosdashboard__empty {
+    margin: 0;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background-color: #f8f9fa;
+    color: #495057;
+}
+
+@media (min-width: 768px) {
+    .block_miscursosdashboard .miscursosdashboard__controls {
+        grid-template-columns: auto minmax(140px, 1fr) auto minmax(140px, 1fr) auto;
+        justify-content: start;
+    }
+
+    .block_miscursosdashboard .miscursosdashboard__controls button {
+        width: auto;
+        min-width: 88px;
+    }
+}
+
+
+
+.block_miscursosdashboard .miscursosdashboard__icon {
+    color: #6c757d;
+    margin-right: 0.2rem;
+}
+
