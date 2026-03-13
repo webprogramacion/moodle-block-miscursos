@@ -81,6 +81,9 @@
                     {{/hasimage}}
 
                     <a class="miscursosdashboard__courselink" href="{{url}}">{{fullname}}</a>
+                    {{#hascategory}}
+                        <span class="miscursosdashboard__badge miscursosdashboard__badge--category">{{categoryname}}</span>
+                    {{/hascategory}}
                     {{#showcoursecompleted}}
                         <span class="miscursosdashboard__badge">{{coursecompletedlabel}}</span>
                     {{/showcoursecompleted}}

@@ -291,6 +291,7 @@ class block_miscursosdashboard extends block_base {
         $results = [];
         $imagesbycourse = [];
         $teachersbycourse = [];
+        $categoriesbycourse = [];
         $now = time();
 
         $courseids = [];
@@ -305,6 +306,7 @@ class block_miscursosdashboard extends block_base {
         if ($showteachers) {
             $teachersbycourse = $this->get_course_teachers_for_courses($courseids);
         }
+        $categoriesbycourse = $this->get_course_categories_for_courses($courses);
 
         foreach ($courses as $record) {
             $courseid = (int)$record->course->id;
@@ -333,6 +335,8 @@ class block_miscursosdashboard extends block_base {
                 'fullname' => $fullname,
                 'url' => (new moodle_url('/course/view.php', ['id' => $courseid]))->out(false),
                 'showcoursecompleted' => $showcompletionbadge && $iscoursefinished,
+                'hascategory' => !empty($categoriesbycourse[$courseid]),
+                'categoryname' => $categoriesbycourse[$courseid] ?? '',
                 'hasimage' => $includeimages,
                 'hasrealimage' => $hasrealimage,
                 'imageurl' => $imageurl,
@@ -518,6 +522,48 @@ class block_miscursosdashboard extends block_base {
 
             $result[$courseid][] = fullname($row);
             $seen[$courseid][$userid] = true;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns category names keyed by course id.
+     *
+     * @param array $courses
+     * @return array
+     */
+    private function get_course_categories_for_courses(array $courses): array {
+        global $DB;
+
+        $categoryids = [];
+        $categoryidbycourse = [];
+        foreach ($courses as $record) {
+            $courseid = (int)$record->course->id;
+            $categoryid = isset($record->course->category) ? (int)$record->course->category : 0;
+            if ($categoryid <= 0) {
+                continue;
+            }
+            $categoryidbycourse[$courseid] = $categoryid;
+            $categoryids[] = $categoryid;
+        }
+
+        $categoryids = array_values(array_unique($categoryids));
+        if (empty($categoryids)) {
+            return [];
+        }
+
+        $categories = $DB->get_records_list('course_categories', 'id', $categoryids, '', 'id, name');
+        if (empty($categories)) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($categoryidbycourse as $courseid => $categoryid) {
+            if (!isset($categories[$categoryid])) {
+                continue;
+            }
+            $result[$courseid] = format_string($categories[$categoryid]->name);
         }
 
         return $result;

@@ -105,6 +105,11 @@
     background-color: #fff3cd;
     color: #8a6d3b;
 }
+.block_miscursosdashboard .miscursosdashboard__badge--category {
+    background-color: #d9ffe6;
+    color: #0b3d1f;
+    border: 1px solid #00c945;
+}
 
 .block_miscursosdashboard .miscursosdashboard__courselink:hover,
 .block_miscursosdashboard .miscursosdashboard__courselink:focus {
